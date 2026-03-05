@@ -1,0 +1,22 @@
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+build/
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
