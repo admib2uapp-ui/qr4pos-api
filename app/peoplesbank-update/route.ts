@@ -9,6 +9,22 @@ interface BankWebhookPayload {
 
 export async function POST(request: NextRequest) {
   try {
+    // IP Whitelisting
+    const allowedIPs = (process.env.ALLOWED_IPS || '').split(',').filter(Boolean);
+    if (allowedIPs.length > 0) {
+      const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() 
+                    || request.headers.get('x-real-ip')?.trim() 
+                    || '';
+      
+      if (!allowedIPs.includes(clientIP)) {
+        console.log(`IP blocked: ${clientIP}. Allowed: ${allowedIPs.join(', ')}`);
+        return NextResponse.json(
+          { message: 'IP not allowed' },
+          { status: 401 }
+        );
+      }
+    }
+
     const apiKey = request.headers.get('x-api-key');
     const contentType = request.headers.get('content-type');
     const expectedApiKey = process.env.PEOPLES_BANK_API_KEY;
